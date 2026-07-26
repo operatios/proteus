@@ -25,13 +25,10 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-install-project
 
-# TODO: do we need this?
-# COPY app ./app
+COPY README.md app ./
 
-# RUN --mount=type=cache,target=/root/.cache/uv \
-    # uv sync --locked --no-dev
-# TODO
-
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-dev
 
 # builder-dev
 FROM builder AS builder-dev

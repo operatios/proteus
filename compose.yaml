@@ -1,7 +1,6 @@
 services:
   api:
     build: .
-
     env_file: .env
 
     depends_on:
@@ -12,14 +11,13 @@ services:
 
   postgres:
     image: postgres:18
-
     env_file: .env
 
     volumes:
       - pgdata:/var/lib/postgresql
 
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${DB_USER} -d $${DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
