@@ -8,9 +8,9 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
     )
 
-    db_user: str
-    db_password: SecretStr
-    db_name: str
+    # db_user: str
+    # db_password: SecretStr
+    # db_name: str
     db_url: PostgresDsn
 
     jwt_secret_key: SecretStr

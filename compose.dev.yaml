@@ -1,0 +1,19 @@
+services:
+  api:
+    build:
+      target: dev
+    volumes:
+      - ./app:/app/app
+      - ./tests:/app/tests
+      - ./htmlcov:/app/htmlcov
+
+    ports:
+      - 8000:8000
+
+  postgres:
+    ports:
+      - 5432:5432
+
+  redis:
+    ports:
+      - 6379:6379

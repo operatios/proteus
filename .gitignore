@@ -11,3 +11,12 @@ wheels/
 
 # Dotenv
 .env
+.env.*
+!.env.example
+
+# Cache
+.pytest_cache/
+.ruff_cache/
+
+# Test coverage
+htmlcov/

@@ -3,16 +3,9 @@
 .gitignore
 .gitattributes
 
-
-# CI
-.codeclimate.yml
-.travis.yml
-.taskcluster.yml
-
 # Docker
-docker-compose.yml
+compose*.yaml
 Dockerfile
-.docker
 .dockerignore
 
 # Byte-compiled / optimized / DLL files
@@ -72,6 +65,7 @@ target/
 
 # Virtual environment
 .env
+.env.*
 .venv/
 venv/
 
@@ -87,3 +81,9 @@ venv/
 
 # VS Code
 .vscode/
+
+# Markdown files
+*.md
+
+# Tests
+tests/
