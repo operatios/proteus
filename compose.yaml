@@ -1,7 +1,14 @@
 services:
   api:
     build: .
+    init: true
     env_file: .env
+
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 5
 
     depends_on:
       postgres:
@@ -11,7 +18,11 @@ services:
 
   postgres:
     image: postgres:18
-    env_file: .env
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
 
     volumes:
       - pgdata:/var/lib/postgresql

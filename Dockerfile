@@ -1,14 +1,16 @@
+# Used https://docs.astral.sh/uv/guides/integration/docker/ as reference
+
 # base
 FROM python:3.14-slim AS base
 
+ENV UV_PYTHON_DOWNLOADS=never
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app
 
-ENV PATH="/app/.venv/bin:$PATH"
 EXPOSE 8000
-
 
 # builder
 FROM base AS builder
@@ -18,42 +20,35 @@ COPY --from=ghcr.io/astral-sh/uv:0.11.32 /uv /uvx /bin/
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
 
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock .
 
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --locked --no-install-project
 
-COPY README.md app ./
+COPY app ./app
 
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked --no-dev
+    uv sync --locked --no-dev --no-editable
 
 # builder-dev
 FROM builder AS builder-dev
 
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked
-
+    uv sync --locked --no-editable
 
 # dev
 FROM base AS dev
 
 COPY --from=builder-dev /app/.venv /app/.venv
+COPY alembic.ini .
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
-
 
 # prod
 FROM base AS prod
 
-COPY app ./app
 COPY --from=builder /app/.venv /app/.venv
+COPY --from=builder /app/app ./app
+COPY alembic.ini .
 
-# deduplicate cmd by setting args
-# create unpriviliged user
-# copy alembic
-# healthcheck
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]

@@ -82,6 +82,8 @@ venv/
 # VS Code
 .vscode/
 
-
 # Tests
 tests/
+
+# Markdown
+*.md

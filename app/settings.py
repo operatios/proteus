@@ -1,19 +1,17 @@
-from pydantic import PostgresDsn, SecretStr
+from pydantic import PostgresDsn, RedisDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-    )
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
-    # db_user: str
-    # db_password: SecretStr
-    # db_name: str
-    db_url: PostgresDsn
+    DB_URL: PostgresDsn
+    REDIS_URL: RedisDsn
 
-    jwt_secret_key: SecretStr
+    SQL_ECHO: bool
+
+    JWT_SECRET_KEY: SecretStr
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int
 
 
 settings = Settings()
