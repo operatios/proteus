@@ -1,8 +1,10 @@
 from fastapi.concurrency import run_in_threadpool
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import security
+from app.exceptions import UserAlreadyExists
 from app.models import User
 
 
@@ -17,18 +19,21 @@ class UserService:
         return res.scalar_one_or_none()
 
     async def create(self, username: str, email: str, password: str) -> User:
-        user = User(
-            username=username,
-            email=email,
-            hashed_password=security.hash_password(password),
-            is_active=True,
-        )
+        try:
+            user = User(
+                username=username,
+                email=email,
+                hashed_password=security.hash_password(password),
+                is_active=True,
+            )
 
-        self.session.add(user)
-        await self.session.commit()
-        await self.session.refresh(user)
+            self.session.add(user)
+            await self.session.commit()
+            await self.session.refresh(user)
 
-        return user
+            return user
+        except IntegrityError:
+            raise UserAlreadyExists
 
     async def authenticate_credentials(
         self, username: str, password: str

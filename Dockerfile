@@ -40,6 +40,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 FROM base AS dev
 
 COPY --from=builder-dev /app/.venv /app/.venv
+COPY alembic ./alembic
 COPY alembic.ini .
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
@@ -49,6 +50,7 @@ FROM base AS prod
 
 COPY --from=builder /app/.venv /app/.venv
 COPY --from=builder /app/app ./app
+COPY alembic ./alembic
 COPY alembic.ini .
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]

@@ -11,7 +11,7 @@ class User(BaseModel):
     email: EmailStr
 
 
-class UserOut(BaseModel):
+class UserOut(User):
     id: int
 
 

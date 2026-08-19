@@ -4,6 +4,7 @@ services:
       target: dev
     volumes:
       - ./app:/app/app
+      - ./alembic:/app/alembic
       - ./tests:/app/tests
       - ./htmlcov:/app/htmlcov
 

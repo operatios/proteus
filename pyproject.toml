@@ -29,12 +29,13 @@ requires = ["uv_build>=0.11.32,<0.13.0"]
 build-backend = "uv_build"
 
 [tool.ruff.lint]
-extend-select = ["ANN", "PYI", "RUF045"]
+extend-select = ["ANN", "PYI", "FAST"]
 preview = true
 
 [tool.ty.rules]
 missing-type-argument = "error"
 possibly-unresolved-reference = "warn"
+unsound-return-statement = "error"
 
 [tool.uv.build-backend]
 module-name = "app"

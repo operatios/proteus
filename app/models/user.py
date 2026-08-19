@@ -4,7 +4,7 @@ from app.db import TimestampMixin, intpk
 from app.models import Base
 
 
-class User(TimestampMixin, Base):
+class User(Base, TimestampMixin):
     __tablename__ = "user"
 
     id: Mapped[intpk]

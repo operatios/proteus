@@ -9,6 +9,7 @@ from fastapi.security import (
 
 from app import security
 from app.deps import get_user_service
+from app.exceptions import UserAlreadyExists
 from app.models import User
 from app.schemas.auth import RegisterIn, RegisterOut, Token, UserOut
 from app.services.user_service import UserService
@@ -68,10 +69,10 @@ async def register(
 ) -> RegisterOut:
     try:
         user = await user_service.create(**data.model_dump())
-    except Exception:  # TODO: UserAlreadyExists
+    except UserAlreadyExists as exc:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Username/email already taken",
+            detail=str(exc),
         )
 
     return RegisterOut.model_validate(user, from_attributes=True)
